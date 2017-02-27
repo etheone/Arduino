@@ -122,7 +122,7 @@ boolean httpPost(char * host, uint16_t port, char * url)
 
 
 void loop() {
-  t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update");
+  t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update.bin");
 
   switch(ret) {
     case HTTP_UPDATE_FAILED:
