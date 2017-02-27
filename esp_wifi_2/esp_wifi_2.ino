@@ -58,17 +58,6 @@ void setup() {
     delay(500);
   }
 
-  t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update");
-
-  switch(ret) {
-    case HTTP_UPDATE_FAILED:
-      break;
-    case HTTP_UPDATE_NO_UPDATES:
-      break;
-    case HTTP_UPDATE_OK:
-      break;
-  }
-
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
@@ -115,7 +104,7 @@ boolean httpPost(char * host, uint16_t port, char * url)
 
   char buffer[256];
   data.prettyPrintTo(buffer, sizeof(buffer));*/
-  String toSend = "{\"deviceId\": \"9f8bc3bc-b8ce-4e8a-b91b-973fed280ff4\", \"data\": { \"temp\": " + String(temp_c, DEC) + ", \"humidity\": " + String(humidity, DEC) + "}}";
+  String toSend = "{\"deviceId\": \"9f8bc3bc-b8ce-4e8a-b91b-973fed280ff4\", \"data\": { \"temp\": " + String(temp_c, DEC) + ", \"humid\": " + String(humidity, DEC) + "}}";
  // Serial.println("Buffer is: " + buffer);
   // configure target server and url
   http.begin(host, port, url);
@@ -133,6 +122,20 @@ boolean httpPost(char * host, uint16_t port, char * url)
 
 
 void loop() {
+  t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update");
+
+  switch(ret) {
+    case HTTP_UPDATE_FAILED:
+      Serial.println("HTTP_UPDATE_FAILED");
+      break;
+    case HTTP_UPDATE_NO_UPDATES:
+      Serial.println("HTTP_UPDATE_NO_UPDATES");
+      break;
+    case HTTP_UPDATE_OK:
+      Serial.println("HTTP_UPDATE_OK");
+      break;
+  }
+  
   uint16_t port = 80;
   char* host = "devota.se"; // ip or dns
   char* route = "/api/data/addreal"; //route
@@ -169,8 +172,8 @@ void loop() {
     Serial.println("closing connection");
     client.stop();*/
 
-  Serial.println("wait 120 seconds...");
-  delay(120000);
+  Serial.println("wait 30 seconds...");
+  delay(30000);
 }
 
 
