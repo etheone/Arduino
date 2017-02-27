@@ -9,6 +9,7 @@
 
 ESP8266WiFiMulti WiFiMulti;
 
+int i = 0;
 float humidity, temp_c;
 unsigned long previousMillis = 0;        // will store last temp was read
 const long interval = 2000;
@@ -61,7 +62,7 @@ boolean httpPost(char * host, uint16_t port, char * url)
 
   unsigned long start = millis();
 
-  String toSend = "{\"deviceId\": \"9f8bc3bc-b8ce-4e8a-b91b-973fed280ff4\", \"data\": { \"temp\": " + String(temp_c, DEC) + ", \"humid\": " + String(humidity, DEC) + "}}";
+  String toSend = "{\"deviceId\": \"9f8bc3bc-b8ce-4e8a-b91b-973fed280ff4\", \"data\": { \"temperature\": " + String(temp_c, DEC) + ", \"humidity\": " + String(humidity, DEC) + "}}";
   http.begin(host, port, url);
 
   http.addHeader("Content-Type", "application/json");
@@ -76,20 +77,23 @@ boolean httpPost(char * host, uint16_t port, char * url)
 }
 
 void loop() {
-  t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update.bin");
 
-  switch(ret) {
-    case HTTP_UPDATE_FAILED:
-      Serial.println("HTTP_UPDATE_FAILED Error (%d): %s\n");
-      Serial.println(ESPhttpUpdate.getLastError());
-      Serial.println(ESPhttpUpdate.getLastErrorString().c_str());
-      break;
-    case HTTP_UPDATE_NO_UPDATES:
-      Serial.println("HTTP_UPDATE_NO_UPDATES");
-      break;
-    case HTTP_UPDATE_OK:
-      Serial.println("HTTP_UPDATE_OK");
-      break;
+  if (i % 5 == 0) {
+    t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update.bin");
+  
+    switch(ret) {
+      case HTTP_UPDATE_FAILED:
+        Serial.println("HTTP_UPDATE_FAILED Error (%d): %s\n");
+        Serial.println(ESPhttpUpdate.getLastError());
+        Serial.println(ESPhttpUpdate.getLastErrorString().c_str());
+        break;
+      case HTTP_UPDATE_NO_UPDATES:
+        Serial.println("HTTP_UPDATE_NO_UPDATES");
+        break;
+      case HTTP_UPDATE_OK:
+        Serial.println("HTTP_UPDATE_OK");
+        break;
+    }
   }
   
   uint16_t port = 80;
@@ -104,8 +108,10 @@ void loop() {
 
   Serial.println("Was POSTrequest OK? " + httpCode);
 
-  Serial.println("wait 30 seconds...");
-  delay(30000);
+  i++;
+
+  Serial.println("wait 10 seconds...");
+  delay(10000);
 }
 
 
