@@ -62,7 +62,7 @@ boolean httpPost(char * host, uint16_t port, char * url)
 
   unsigned long start = millis();
 
-  String toSend = "{\"deviceId\": \"9f8bc3bc-b8ce-4e8a-b91b-973fed280ff4\", \"data\": { \"temperature\": " + String(temp_c, DEC) + ", \"humidity\": " + String(humidity, DEC) + "}}";
+  String toSend = "{\"deviceId\": \"9f8bc3bc-b8ce-4e8a-b91b-973fed280ff4\", \"data\": { \"temp\": " + String(temp_c, DEC) + ", \"humid\": " + String(humidity, DEC) + "}}";
   http.begin(host, port, url);
 
   http.addHeader("Content-Type", "application/json");
