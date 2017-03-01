@@ -28,14 +28,14 @@
 */
 
 
-#include <ESP8266WiFi.h>
+//#include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <DHT.h>
 #define DHTTYPE DHT11
 #define DHTPIN  2
 
 ESP8266WiFiMulti WiFiMulti;
-
+int x = 1;
 float humidity, temp_c;
 unsigned long previousMillis = 0;        // will store last temp was read
 const long interval = 2000;
@@ -122,18 +122,24 @@ boolean httpPost(char * host, uint16_t port, char * url)
 
 
 void loop() {
-  t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update.bin");
 
-  switch(ret) {
-    case HTTP_UPDATE_FAILED:
-      Serial.println("HTTP_UPDATE_FAILED");
-      break;
-    case HTTP_UPDATE_NO_UPDATES:
-      Serial.println("HTTP_UPDATE_NO_UPDATES");
-      break;
-    case HTTP_UPDATE_OK:
-      Serial.println("HTTP_UPDATE_OK");
-      break;
+  if(x % 5 == 0) {
+    t_httpUpdate_return ret = ESPhttpUpdate.update("http://www.devota.se/api/OTA/update.bin");
+  
+    switch (ret)
+    {
+      case HTTP_UPDATE_FAILED:
+        Serial.println("HTTP_UPDATE_FAILED Error (%d): %s\n");
+        Serial.println(ESPhttpUpdate.getLastError());
+        Serial.println(ESPhttpUpdate.getLastErrorString().c_str());
+        break;
+      case HTTP_UPDATE_NO_UPDATES:
+        Serial.println("HTTP_UPDATE_NO_UPDATES");
+        break;
+      case HTTP_UPDATE_OK:
+        Serial.println("HTTP_UPDATE_OK");
+        break;  
+    }
   }
   
   uint16_t port = 80;
@@ -152,7 +158,7 @@ void loop() {
   /* Serial.print("connecting to ");
     Serial.println(host);
 
-    // Use WiFiClient class to create TCP connections
+    // Use WiFiClient class to cre  ate TCP connections
     WiFiClient client;
 
     if (!client.connect(host, port)) {
@@ -171,9 +177,9 @@ void loop() {
 
     Serial.println("closing connection");
     client.stop();*/
-
-  Serial.println("wait 30 seconds...");
-  delay(30000);
+  x++;
+  Serial.println("wait 15 seconds...");
+  delay(15000);
 }
 
 
